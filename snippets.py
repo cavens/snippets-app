@@ -22,7 +22,41 @@ def main():
 	put_parser.add_argument("name",help="The name of the snippet")
 	put_parser.add_argument("snippet",help="The snippet text")
 
+	# Subparser for the get command
+	logging.debug("Constructing get subparser")
+	get_parser = subparsers.add_parser("get",help="Retrieves a snippet")
+	get_parser.add_argument("name",help="The name of the snippet")
+
+	# Subparser for the delete command
+	logging.debug("Constructing delete parser")
+	delete_parser = subparsers.add_parser("delete",help="Deletes a snippet")
+	delete_parser.add_argument("name",help="The name of the snippet")
+
+	# Subparse for the update command
+	logging.debug("Constructing update parser")
+	update_parser = subparsers.add_parser("update",help="Updates a snippet")
+	update_parser.add_argument("name",help="The name of the snippet")
+	update_parser.add_argument("newname",help="The new name of the snippet")
+	update_parser.add_argument("newsnippet",help="The new snippet")
+
 	arguments = parser.parse_args(sys.argv[1:])
+	arguments = vars(arguments)
+	command = arguments.pop("command")
+
+	if command == "put":
+		name, snippet = put(**arguments)
+		print("Stored {!r} as {!r}").format(snippet,name)
+	elif command == "get":
+		name = get(**arguments)
+		print("Retrieved snippet:{!r}").format(snippet)
+	elif command == "delete":
+		name = delete(**arguments)
+		print("Deleted snippet:{!r}").format(snippet)
+	elif command == "update":
+		name = update(**arguments)
+		newname = update(**arguments)
+		newsnippet = update(**arguments)
+		print("Updated {!r} to {!r} saying: {!r}").format(name,newname,newsnippet)
 
 if __name__ == "__main__":
 	main()
@@ -50,8 +84,6 @@ def get(name):
 	logging.error("FIXME: Unimplemented - get({!r})".format(name))
 	return ""
 
-
-
 def delete(name):
 	"""
 	Delete the snippet with a given name.
@@ -63,8 +95,7 @@ def delete(name):
 	logging.error("FIXME: Unimplemented - get({!r})".format(name))
 	return ""
 
-
-def update(name, newname, snippet):
+def update(name, newname, newsnippet):
 	"""
 	Update the snippet with a given name.
 
