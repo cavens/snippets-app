@@ -7,6 +7,52 @@ import sys
 logging.basicConfig(filename="snippets.log", level=logging.DEBUG)
 
 
+# A couple of stubs
+def put(name,snippet):
+	"""
+	Store a snippet with an associated name.
+	Returns the name and the snippet.
+	"""
+	logging.error("FIXME Unimplemented - put({!r},{!r})".format(name,snippet))
+	return name, snippet
+
+put("list","A sequence of things created by []")
+
+def get(name):
+	"""
+	Retrieve the snippet with a given name.
+
+	If there's no such snippet, show message: "Entry not found, pls check for spelling errors"
+
+	Returns the snippet.
+	"""
+	logging.error("FIXME: Unimplemented - get({!r})".format(name))
+	return name
+
+def delete(name):
+	"""
+	Delete the snippet with a given name.
+
+	If there's no such snippet, show message: "Entry not found, pls check for spelling errors"
+
+	Returns the snippet.
+	"""
+	logging.error("FIXME: Unimplemented - get({!r})".format(name))
+	return name
+
+def update(name, newname, newsnippet):
+	"""
+	Update the snippet with a given name.
+
+	If there's no such snippet, show message: "Entry not found, pls check for spelling errors"
+
+	Returns the snippet.
+	"""
+	logging.error("FIXME: Unimplemented - get({!r})".format(name))
+	return name, newname, newsnippet
+
+
+
 # Main function
 def main():
 	"""Main function"""
@@ -45,66 +91,18 @@ def main():
 
 	if command == "put":
 		name, snippet = put(**arguments)
-		print("Stored {!r} as {!r}").format(snippet,name)
+		print("Stored {!r} as {!r}".format(snippet,name))
 	elif command == "get":
 		name = get(**arguments)
-		print("Retrieved snippet:{!r}").format(snippet)
+		print("Retrieved snippet:{!r}".format(name))
 	elif command == "delete":
 		name = delete(**arguments)
-		print("Deleted snippet:{!r}").format(snippet)
+		print("Deleted snippet:{!r}".format(name))
 	elif command == "update":
-		name = update(**arguments)
-		newname = update(**arguments)
-		newsnippet = update(**arguments)
-		print("Updated {!r} to {!r} saying: {!r}").format(name,newname,newsnippet)
+		name, newname, newsnippet = update(**arguments)
+		print("Updated {!r} to {!r} saying: {!r}".format(name,newname,newsnippet))
 
 if __name__ == "__main__":
 	main()
-
-
-# A couple of stubs
-def put(name,snippet):
-	"""
-	Store a snippet with an associated name.
-	Returns the name and the snippet.
-	"""
-	logging.error("FIXME Unimplemented - put({!r},{!r})".format(name,snippet))
-	return name, snippet
-
-put("list","A sequence of things created by []")
-
-def get(name):
-	"""
-	Retrieve the snippet with a given name.
-
-	If there's no such snippet, show message: "Entry not found, pls check for spelling errors"
-
-	Returns the snippet.
-	"""
-	logging.error("FIXME: Unimplemented - get({!r})".format(name))
-	return ""
-
-def delete(name):
-	"""
-	Delete the snippet with a given name.
-
-	If there's no such snippet, show message: "Entry not found, pls check for spelling errors"
-
-	Returns the snippet.
-	"""
-	logging.error("FIXME: Unimplemented - get({!r})".format(name))
-	return ""
-
-def update(name, newname, newsnippet):
-	"""
-	Update the snippet with a given name.
-
-	If there's no such snippet, show message: "Entry not found, pls check for spelling errors"
-
-	Returns the snippet.
-	"""
-	logging.error("FIXME: Unimplemented - get({!r})".format(name))
-	return ""
-
 
 
