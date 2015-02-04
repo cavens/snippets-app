@@ -36,12 +36,13 @@ def get(name):
 	"""
 	logging.info("Retrieving snippet {!r}".format(name))
 	cursor = connection.cursor()
-	#command = "Select message from snippets where keyword=?",%s
 	cursor.execute("select message from snippets where keyword = '{}'".format(name))
 	row = cursor.fetchone()
 	logging.debug("Retrieved snippet successfully.")
-	print row
-	return row
+ 	if not row:
+		print "Entry not found, pls check for spelling errors"
+	else:
+		return row[0]
 
 def delete(name):
 	"""
@@ -104,7 +105,8 @@ def main():
 		print("Stored {!r} as {!r}".format(snippet,name))
 	elif command == "get":
 		name = get(**arguments)
-		print("Retrieved snippet:{!r}".format(name))
+		if name:
+			print("Retrieved snippet:{!r}".format(name))
 	elif command == "delete":
 		name = delete(**arguments)
 		print("Deleted snippet:{!r}".format(name))
