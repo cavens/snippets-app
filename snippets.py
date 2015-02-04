@@ -1,32 +1,25 @@
 import logging
 import argparse
 import sys
-<<<<<<< HEAD
 import psycopg2
-=======
->>>>>>> 407be81f379eb133351a57193649b90e69e0ca8b
 
 
 # Set the log output file, and the log level
 logging.basicConfig(filename="snippets.log", level=logging.DEBUG)
 
 
-<<<<<<< HEAD
 # Connect to DB from Python
 logging.debug("Connecting to PostgreSQL")
 connection = psycopg2.connect("dbname='snippets' user='action' host='localhost'")
 logging.debug("Database connection established.")
 
 
-=======
->>>>>>> 407be81f379eb133351a57193649b90e69e0ca8b
 # A couple of stubs
 def put(name,snippet):
 	"""
 	Store a snippet with an associated name.
 	Returns the name and the snippet.
 	"""
-<<<<<<< HEAD
 	logging.info("Storing snippet ({!r},{!r})".format(name,snippet))
 	cursor = connection.cursor()
 	command = "Insert into snippets values (%s,%s)"
@@ -49,34 +42,11 @@ def get(name):
 	logging.debug("Retrieved snippet successfully.")
 	print row
 	return row
-=======
-	logging.error("FIXME Unimplemented - put({!r},{!r})".format(name,snippet))
-	return name, snippet
-
-put("list","A sequence of things created by []")
-
-def get(name):
-	"""
-	Retrieve the snippet with a given name.
-
-	If there's no such snippet, show message: "Entry not found, pls check for spelling errors"
-
-	Returns the snippet.
-	"""
-	logging.error("FIXME: Unimplemented - get({!r})".format(name))
-	return name
->>>>>>> 407be81f379eb133351a57193649b90e69e0ca8b
 
 def delete(name):
 	"""
 	Delete the snippet with a given name.
-<<<<<<< HEAD
 	If there's no such snippet, show message: "Entry not found, pls check for spelling errors"
-=======
-
-	If there's no such snippet, show message: "Entry not found, pls check for spelling errors"
-
->>>>>>> 407be81f379eb133351a57193649b90e69e0ca8b
 	Returns the snippet.
 	"""
 	logging.error("FIXME: Unimplemented - get({!r})".format(name))
@@ -85,13 +55,7 @@ def delete(name):
 def update(name, newname, newsnippet):
 	"""
 	Update the snippet with a given name.
-<<<<<<< HEAD
 	If there's no such snippet, show message: "Entry not found, pls check for spelling errors"
-=======
-
-	If there's no such snippet, show message: "Entry not found, pls check for spelling errors"
-
->>>>>>> 407be81f379eb133351a57193649b90e69e0ca8b
 	Returns the snippet.
 	"""
 	logging.error("FIXME: Unimplemented - get({!r})".format(name))

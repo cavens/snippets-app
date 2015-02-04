@@ -250,3 +250,12 @@ DEBUG:root:Constructing delete parser
 DEBUG:root:Constructing update parser
 INFO:root:Retrieving snippet 'Test4'
 DEBUG:root:Retrieved snippet successfully.
+DEBUG:root:Connecting to PostgreSQL
+DEBUG:root:Database connection established.
+INFO:root:Constructing parser
+DEBUG:root:Constructing put subparser
+DEBUG:root:Constructing get subparser
+DEBUG:root:Constructing delete parser
+DEBUG:root:Constructing update parser
+INFO:root:Retrieving snippet 'Stront'
+DEBUG:root:Retrieved snippet successfully.
