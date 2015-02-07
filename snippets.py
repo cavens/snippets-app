@@ -64,7 +64,27 @@ def update(name, newname, newsnippet):
 	logging.error("FIXME: Unimplemented - get({!r})".format(name))
 	return name, newname, newsnippet
 
+def catalog():
+	"""
+	Get a list of all DB entries
+	"""
+	logging.info("Retrieving DB entries")
+	with connection, connection.cursor() as cursor:
+		cursor.execute("select * from snippets")
+		entries = cursor.fetchall()
+	logging.debug("Retrieved entries successfully.")
+	return entries
 
+def search(query):
+	"""
+	Searches for a string in the message and returns the keys and messages.
+	"""
+	logging.info("Searching for {!r}".format(query))
+	with connection, connection.cursor() as cursor:
+		cursor.execute("select * from snippets where message like %s" %("'"'%' + query + '%'"'"),)
+		searchresult = cursor.fetchall()
+	logging.debug("Retrieved search results for {!r} successfully.".format(query))
+	return searchresult
 
 # Main function
 def main():
@@ -87,16 +107,29 @@ def main():
 	get_parser.add_argument("name",help="The name of the snippet")
 
 	# Subparser for the delete command
-	logging.debug("Constructing delete parser")
+	logging.debug("Constructing delete subparser")
 	delete_parser = subparsers.add_parser("delete",help="Deletes a snippet")
 	delete_parser.add_argument("name",help="The name of the snippet")
 
-	# Subparse for the update command
-	logging.debug("Constructing update parser")
+	# Subparser for the update command
+	logging.debug("Constructing update subparser")
 	update_parser = subparsers.add_parser("update",help="Updates a snippet")
 	update_parser.add_argument("name",help="The name of the snippet")
 	update_parser.add_argument("newname",help="The new name of the snippet")
 	update_parser.add_argument("newsnippet",help="The new snippet")
+
+	# Subparser for the catalog command
+	logging.debug("Constructing catalog subparser")
+	catalog_parser = subparsers.add_parser("catalog",help="Retrieves list of DB entries")
+
+	# Subparser for the search command
+	logging.debug("Constructing search subparser")
+	search_parser = subparsers.add_parser("search", help="Retrieves seach results")
+	search_parser.add_argument("query",help="This is the query string")
+#	search_parser.add_argument("searchresult",help="The search results")
+
+
+#	catalog_parser.add_argument("entries",help="The dictionary of DB entries")
 
 	arguments = parser.parse_args(sys.argv[1:])
 	arguments = vars(arguments)
@@ -115,6 +148,13 @@ def main():
 	elif command == "update":
 		name, newname, newsnippet = update(**arguments)
 		print("Updated {!r} to {!r} saying: {!r}".format(name,newname,newsnippet))
+	elif command == "catalog":
+		entries = catalog(**arguments)
+		print("These are all the DB entries: {!r}".format(entries))
+	elif command == "search":
+		logging.debug("In search elif")
+		searchresult = search(**arguments)
+		print("These are the search results: {!r}".format(searchresult))
 
 if __name__ == "__main__":
 	main()
