@@ -14,8 +14,80 @@ connection = psycopg2.connect("dbname='snippets' user='action' host='localhost'"
 logging.debug("Database connection established.")
 
 
+
+# Main function
+def main():
+	"""Main function"""
+	logging.info("Constructing parser")
+	parser = argparse.ArgumentParser(description="Store, retrieve,... snippets of text")
+
+	# Add subparsers
+	subparsers = parser.add_subparsers(dest="command", help="Available commands")
+
+	# Subparser for the put command
+	logging.debug("Constructing put subparser")
+	put_parser = subparsers.add_parser("put",help="Stores a snippet")
+	put_parser.add_argument("name",help="The name of the snippet")
+	put_parser.add_argument("snippet",help="The snippet text")
+	put_parser.add_argument("--hide", help="Hides row")
+
+	# Subparser for the get command
+	logging.debug("Constructing get subparser")
+	get_parser = subparsers.add_parser("get",help="Retrieves a snippet")
+	get_parser.add_argument("name",help="The name of the snippet")
+
+	# Subparser for the delete command
+	logging.debug("Constructing delete subparser")
+	delete_parser = subparsers.add_parser("delete",help="Deletes a snippet")
+	delete_parser.add_argument("name",help="The name of the snippet")
+
+	# Subparser for the update command
+	logging.debug("Constructing update subparser")
+	update_parser = subparsers.add_parser("update",help="Updates a snippet")
+	update_parser.add_argument("name",help="The name of the snippet")
+	update_parser.add_argument("newname",help="The new name of the snippet")
+	update_parser.add_argument("newsnippet",help="The new snippet")
+
+	# Subparser for the catalog command
+	logging.debug("Constructing catalog subparser")
+	catalog_parser = subparsers.add_parser("catalog",help="Retrieves list of DB entries")
+
+	# Subparser for the search command
+	logging.debug("Constructing search subparser")
+	search_parser = subparsers.add_parser("search", help="Retrieves seach results")
+	search_parser.add_argument("query",help="This is the query string")
+
+
+	arguments = parser.parse_args(sys.argv[1:])
+	arguments = vars(arguments)
+#	logging.debug("These are the arguments: s%",(arguments))
+	command = arguments.pop("command")
+
+	if command == "put":
+		logging.debug("Inside put function")
+		name, snippet = put(**arguments)
+		print("Stored {!r} as {!r}".format(snippet,name))
+	elif command == "get":
+		name = get(**arguments)
+		if name:
+			print("Retrieved snippet:{!r}".format(name))
+	elif command == "delete":
+		name = delete(**arguments)
+		print("Deleted snippet:{!r}".format(name))
+	elif command == "update":
+		name, newname, newsnippet = update(**arguments)
+		print("Updated {!r} to {!r} saying: {!r}".format(name,newname,newsnippet))
+	elif command == "catalog":
+		entries = catalog(**arguments)
+		print("These are all the DB entries: {!r}".format(entries))
+	elif command == "search":
+		logging.debug("In search elif")
+		searchresult = search(**arguments)
+		print("These are the search results: {!r}".format(searchresult))
+
+
 # A couple of stubs
-def put(name,snippet):
+def put(name,snippet,hide):
 	"""
 	Store a snippet with an associated name.
 	Returns the name and the snippet.
@@ -27,8 +99,13 @@ def put(name,snippet):
 	except psycopg2.IntegrityError as e:
 		with connection, connection.cursor() as cursor:
 			cursor.execute("update snippets set message=%s where keyword=%s",(snippet,name))
+	if hide:
+		with connection, connection.cursor() as cursor:
+			cursor.execute("update snippets set hidden = 'True' where keyword=%s",(name))
+
 	logging.debug("Snippet stored successfully.")
 	return name, snippet
+
 
 def get(name):
 	"""
@@ -64,6 +141,8 @@ def update(name, newname, newsnippet):
 	logging.error("FIXME: Unimplemented - get({!r})".format(name))
 	return name, newname, newsnippet
 
+	#####>>>> Enter subcommand "--unhide" here????
+
 def catalog():
 	"""
 	Get a list of all DB entries
@@ -84,78 +163,9 @@ def search(query):
 		cursor.execute("select * from snippets where message like %s" %("'"'%' + query + '%'"'"),)
 		searchresult = cursor.fetchall()
 	logging.debug("Retrieved search results for {!r} successfully.".format(query))
-	return searchresult
-
-# Main function
-def main():
-	"""Main function"""
-	logging.info("Constructing parser")
-	parser = argparse.ArgumentParser(description="Store and retrieve snippets of text")
-
-	# Add subparsers
-	subparsers = parser.add_subparsers(dest="command", help="Available commands")
-
-	# Subparser for the put command
-	logging.debug("Constructing put subparser")
-	put_parser = subparsers.add_parser("put",help="Stores a snippet")
-	put_parser.add_argument("name",help="The name of the snippet")
-	put_parser.add_argument("snippet",help="The snippet text")
-
-	# Subparser for the get command
-	logging.debug("Constructing get subparser")
-	get_parser = subparsers.add_parser("get",help="Retrieves a snippet")
-	get_parser.add_argument("name",help="The name of the snippet")
-
-	# Subparser for the delete command
-	logging.debug("Constructing delete subparser")
-	delete_parser = subparsers.add_parser("delete",help="Deletes a snippet")
-	delete_parser.add_argument("name",help="The name of the snippet")
-
-	# Subparser for the update command
-	logging.debug("Constructing update subparser")
-	update_parser = subparsers.add_parser("update",help="Updates a snippet")
-	update_parser.add_argument("name",help="The name of the snippet")
-	update_parser.add_argument("newname",help="The new name of the snippet")
-	update_parser.add_argument("newsnippet",help="The new snippet")
-
-	# Subparser for the catalog command
-	logging.debug("Constructing catalog subparser")
-	catalog_parser = subparsers.add_parser("catalog",help="Retrieves list of DB entries")
-
-	# Subparser for the search command
-	logging.debug("Constructing search subparser")
-	search_parser = subparsers.add_parser("search", help="Retrieves seach results")
-	search_parser.add_argument("query",help="This is the query string")
-#	search_parser.add_argument("searchresult",help="The search results")
-
-
-#	catalog_parser.add_argument("entries",help="The dictionary of DB entries")
-
-	arguments = parser.parse_args(sys.argv[1:])
-	arguments = vars(arguments)
-	command = arguments.pop("command")
-
-	if command == "put":
-		name, snippet = put(**arguments)
-		print("Stored {!r} as {!r}".format(snippet,name))
-	elif command == "get":
-		name = get(**arguments)
-		if name:
-			print("Retrieved snippet:{!r}".format(name))
-	elif command == "delete":
-		name = delete(**arguments)
-		print("Deleted snippet:{!r}".format(name))
-	elif command == "update":
-		name, newname, newsnippet = update(**arguments)
-		print("Updated {!r} to {!r} saying: {!r}".format(name,newname,newsnippet))
-	elif command == "catalog":
-		entries = catalog(**arguments)
-		print("These are all the DB entries: {!r}".format(entries))
-	elif command == "search":
-		logging.debug("In search elif")
-		searchresult = search(**arguments)
-		print("These are the search results: {!r}".format(searchresult))
-
+	return searchresult    
+    
+    
 if __name__ == "__main__":
 	main()
 
