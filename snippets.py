@@ -29,7 +29,7 @@ def main():
 	put_parser = subparsers.add_parser("put",help="Stores a snippet")
 	put_parser.add_argument("name",help="The name of the snippet")
 	put_parser.add_argument("snippet",help="The snippet text")
-	put_parser.add_argument("--hide", help="Hides row")
+	put_parser.add_argument("--hide", help="Hides row", action="store_true")
 
 	# Subparser for the get command
 	logging.debug("Constructing get subparser")
@@ -101,7 +101,8 @@ def put(name,snippet,hide):
 			cursor.execute("update snippets set message=%s where keyword=%s",(snippet,name))
 	if hide:
 		with connection, connection.cursor() as cursor:
-			cursor.execute("update snippets set hidden = 'True' where keyword=%s",(name))
+			logging.info(name)
+			cursor.execute("update snippets set hidden = 'T' where keyword={!r}".format(name))
 
 	logging.debug("Snippet stored successfully.")
 	return name, snippet
